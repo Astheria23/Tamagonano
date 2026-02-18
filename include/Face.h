@@ -33,6 +33,20 @@ void renderFace() {
   // Mata tetap pakai RoundRect biar estetik
   display.fillRoundRect(xL - curW/2, y - curH/2, curW, curH, 4, WHITE);
   display.fillRoundRect(xR - curW/2, y - curH/2, curW, curH, 4, WHITE);
+
+  // Eyelids for blink (draw black masks from top/bottom)
+  float blink = constrain(curBlink, 0.0f, 1.0f);
+  if (blink > 0.01f) {
+    int lid = static_cast<int>((curH * blink) / 2.0f);
+    int eyeW = static_cast<int>(curW);
+    int eyeH = static_cast<int>(curH);
+    display.fillRect(xL - eyeW/2, y - eyeH/2, eyeW, lid, BLACK);
+    display.fillRect(xL - eyeW/2, y + eyeH/2 - lid, eyeW, lid, BLACK);
+    display.fillRect(xR - eyeW/2, y - eyeH/2, eyeW, lid, BLACK);
+    display.fillRect(xR - eyeW/2, y + eyeH/2 - lid, eyeW, lid, BLACK);
+  }
+
+  // Mouth intentionally omitted for a cleaner expression
 }
 
 #endif

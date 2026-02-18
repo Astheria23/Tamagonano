@@ -3,8 +3,9 @@
 namespace {
 constexpr int kBuzzerChannel = 0;
 constexpr int kBuzzerResolution = 8;
-constexpr int kBuzzerFreq = 1568; // G6
+constexpr int kBuzzerBaseFreq = 2093; // C7
 constexpr int kBuzzerTickMs = 40;
+constexpr int kBuzzerEndMs = 420;
 constexpr int kTextSize = 2;
 constexpr const char *kTitle = "Tamagonano";
 constexpr const char *kSubtitle = "Made with \x03 by Oiq";
@@ -15,15 +16,15 @@ int textWidthPx() {
   return static_cast<int>(strlen(kTitle)) * charWidth;
 }
 
-void playTick() {
-  ledcWriteTone(kBuzzerChannel, kBuzzerFreq);
-  delay(kBuzzerTickMs);
+void playTick(int freq, int durationMs = kBuzzerTickMs) {
+  ledcWriteTone(kBuzzerChannel, freq);
+  delay(durationMs);
   ledcWriteTone(kBuzzerChannel, 0);
 }
 } // namespace
 
 void showSplash() {
-  ledcSetup(kBuzzerChannel, kBuzzerFreq, kBuzzerResolution);
+  ledcSetup(kBuzzerChannel, kBuzzerBaseFreq, kBuzzerResolution);
   ledcAttachPin(BUZZER_PIN, kBuzzerChannel);
 
   display.clearDisplay();
@@ -46,7 +47,8 @@ void showSplash() {
     display.print(kSubtitle);
     display.setTextSize(kTextSize);
     display.display();
-    playTick();
+    const int freq = kBuzzerBaseFreq + static_cast<int>(i % 5) * 180;
+    playTick(freq);
     delay(80);
   }
 
@@ -70,6 +72,7 @@ void showSplash() {
     delay(120);
   }
 
+  playTick(kBuzzerBaseFreq + 320, kBuzzerEndMs);
   delay(kHoldMs);
   ledcDetachPin(BUZZER_PIN);
 }

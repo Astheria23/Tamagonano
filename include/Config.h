@@ -18,6 +18,7 @@ extern Adafruit_SSD1306 display;
 // Deklarasi extern supaya semua file 'kenal'
 extern float curX, curY, curW, curH, curS;
 extern float tarX, tarY, tarW, tarH, tarS;
+extern float curBlink, tarBlink;
 extern int lastWrittenServo;
 extern unsigned long lastServoUpdate;
 
