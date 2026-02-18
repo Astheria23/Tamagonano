@@ -1,5 +1,4 @@
 #include "Config.h"
-#include "Animation.h"
 
 // Global animation state
 float curX = 0;
