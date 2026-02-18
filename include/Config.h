@@ -10,6 +10,9 @@
 #define SCL_PIN 9
 #define SERVO_PIN 4
 #define BUZZER_PIN 5
+#define TOUCH1_PIN 2
+#define TOUCH2_PIN 3
+#define TOUCH3_PIN 10
 #define SCREEN_WIDTH 128
 #define SCREEN_HEIGHT 64
 
