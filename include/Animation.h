@@ -10,7 +10,7 @@ extern unsigned long blinkReleaseTime;
 
 static inline void playHum() {
   static bool buzzerInit = false;
-  constexpr int kHumChannel = 1;
+  constexpr int kHumChannel = 4;
   constexpr int kHumResolution = 8;
   constexpr int kHumFreq = 220; // soft hum
   if (!buzzerInit) {
@@ -25,12 +25,16 @@ static inline void playHum() {
 
 void handleIdleLogic() {
   unsigned long now = millis();
+  static unsigned long lastHumTime = 0;
   if (now > nextIdleAction) {
     const bool lookAway = random(1000) < 140;
     if (lookAway) {
       tarX = random(-22, 22); 
       tarY = random(-12, 10);
-      playHum();
+      if (now - lastHumTime > 2000) {
+        playHum();
+        lastHumTime = now;
+      }
     } else {
       tarX = random(-4, 5);
       tarY = random(-3, 4);

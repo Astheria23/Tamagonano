@@ -1,7 +1,7 @@
 #include "Splash.h"
 
 namespace {
-constexpr int kBuzzerChannel = 0;
+constexpr int kBuzzerChannel = 4;
 constexpr int kBuzzerResolution = 8;
 constexpr int kBuzzerBaseFreq = 2093; // C7
 constexpr int kBuzzerTickMs = 40;

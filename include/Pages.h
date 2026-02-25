@@ -17,6 +17,7 @@ struct PomodoroState {
 };
 
 void renderClockPage(uint32_t nowMs);
+void renderClockPageNTP();
 void renderPomodoroPage(const PomodoroState &state);
 void updatePomodoro(PomodoroState &state, uint32_t nowMs);
 void resetPomodoro(PomodoroState &state, uint32_t durationSec);

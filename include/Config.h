@@ -5,24 +5,32 @@
 #include <Adafruit_GFX.h>
 #include <Adafruit_SSD1306.h>
 #include <ESP32Servo.h>
+#include <time.h>
 
 #define SDA_PIN 8
 #define SCL_PIN 9
 #define SERVO_PIN 4
 #define BUZZER_PIN 5
-#define TOUCH1_PIN 2
-#define TOUCH2_PIN 3
-#define TOUCH3_PIN 10
+#define TOUCH1_PIN 1
+#define TOUCH2_PIN 2
+#define TOUCH3_PIN 3
+#define LDR_PIN 0
 #define SCREEN_WIDTH 128
 #define SCREEN_HEIGHT 64
 
+#define NTP_SERVER "pool.ntp.org"
+#define GMT_OFFSET_SEC 25200   // WIB UTC+7
+#define DAYLIGHT_OFFSET_SEC 0
+
 extern Adafruit_SSD1306 display;
 
-// Deklarasi extern supaya semua file 'kenal'
 extern float curX, curY, curW, curH, curS;
 extern float tarX, tarY, tarW, tarH, tarS;
 extern float curBlink, tarBlink;
 extern int lastWrittenServo;
 extern unsigned long lastServoUpdate;
+
+extern bool wifiConnected;
+extern bool ntpSynced;
 
 #endif

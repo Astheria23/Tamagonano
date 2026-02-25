@@ -22,3 +22,6 @@ unsigned long nextBlinkTime = 0;
 unsigned long blinkReleaseTime = 0;
 
 float curBlink = 0;
+
+bool wifiConnected = false;
+bool ntpSynced = false;

@@ -1,43 +1,71 @@
 #include "Pages.h"
 
-namespace {
-void drawCenteredText(const char *text, int16_t y, uint8_t textSize) {
-  display.setTextSize(textSize);
-  display.setTextColor(WHITE);
-  int16_t x = (SCREEN_WIDTH - (6 * textSize * strlen(text))) / 2;
-  display.setCursor(x, y);
-  display.print(text);
-}
+namespace
+{
+  void drawCenteredText(const char *text, int16_t y, uint8_t textSize)
+  {
+    display.setTextSize(textSize);
+    display.setTextColor(WHITE);
+    int16_t x = (SCREEN_WIDTH - (6 * textSize * strlen(text))) / 2;
+    display.setCursor(x, y);
+    display.print(text);
+  }
 
-void formatTime(uint32_t totalSeconds, char *out, size_t outSize) {
-  uint32_t hours = totalSeconds / 3600;
-  uint32_t minutes = (totalSeconds % 3600) / 60;
-  uint32_t seconds = totalSeconds % 60;
-  snprintf(out, outSize, "%02lu:%02lu:%02lu",
-           static_cast<unsigned long>(hours % 24),
-           static_cast<unsigned long>(minutes),
-           static_cast<unsigned long>(seconds));
-}
+  void formatTime(uint32_t totalSeconds, char *out, size_t outSize)
+  {
+    uint32_t hours = totalSeconds / 3600;
+    uint32_t minutes = (totalSeconds % 3600) / 60;
+    uint32_t seconds = totalSeconds % 60;
+    snprintf(out, outSize, "%02lu:%02lu:%02lu",
+             static_cast<unsigned long>(hours % 24),
+             static_cast<unsigned long>(minutes),
+             static_cast<unsigned long>(seconds));
+  }
 
-void formatMinutes(uint32_t totalSeconds, char *out, size_t outSize) {
-  uint32_t minutes = totalSeconds / 60;
-  uint32_t seconds = totalSeconds % 60;
-  snprintf(out, outSize, "%02lu:%02lu",
-           static_cast<unsigned long>(minutes),
-           static_cast<unsigned long>(seconds));
-}
+  void formatMinutes(uint32_t totalSeconds, char *out, size_t outSize)
+  {
+    uint32_t minutes = totalSeconds / 60;
+    uint32_t seconds = totalSeconds % 60;
+    snprintf(out, outSize, "%02lu:%02lu",
+             static_cast<unsigned long>(minutes),
+             static_cast<unsigned long>(seconds));
+  }
 } // namespace
 
-void renderClockPage(uint32_t nowMs) {
+void renderClockPage(uint32_t nowMs)
+{
   const uint32_t totalSeconds = nowMs / 1000;
   char timeBuf[16];
   formatTime(totalSeconds, timeBuf, sizeof(timeBuf));
 
   drawCenteredText("CLOCK", 14, 1);
   drawCenteredText(timeBuf, 30, 2);
+  drawCenteredText("(no sync)", 50, 1);
 }
 
-void renderPomodoroPage(const PomodoroState &state) {
+void renderClockPageNTP()
+{
+  struct tm timeinfo;
+  if (!getLocalTime(&timeinfo))
+  {
+    drawCenteredText("CLOCK", 14, 1);
+    drawCenteredText("SYNCING...", 30, 1);
+    return;
+  }
+  char timeBuf[16];
+  snprintf(timeBuf, sizeof(timeBuf), "%02d:%02d:%02d",
+           timeinfo.tm_hour, timeinfo.tm_min, timeinfo.tm_sec);
+
+  char dateBuf[16];
+  snprintf(dateBuf, sizeof(dateBuf), "%02d/%02d/%04d",
+           timeinfo.tm_mday, timeinfo.tm_mon + 1, timeinfo.tm_year + 1900);
+
+  drawCenteredText(dateBuf, 14, 1);
+  drawCenteredText(timeBuf, 28, 2);
+}
+
+void renderPomodoroPage(const PomodoroState &state)
+{
   char timeBuf[16];
   formatMinutes(state.remainingSec, timeBuf, sizeof(timeBuf));
 
@@ -46,25 +74,32 @@ void renderPomodoroPage(const PomodoroState &state) {
   drawCenteredText(state.running ? "RUNNING" : "PAUSED", 50, 1);
 }
 
-void updatePomodoro(PomodoroState &state, uint32_t nowMs) {
-  if (!state.running) {
+void updatePomodoro(PomodoroState &state, uint32_t nowMs)
+{
+  if (!state.running)
+  {
     state.lastTickMs = nowMs;
     return;
   }
 
-  if (nowMs - state.lastTickMs >= 1000) {
+  if (nowMs - state.lastTickMs >= 1000)
+  {
     uint32_t elapsed = (nowMs - state.lastTickMs) / 1000;
     state.lastTickMs += elapsed * 1000;
-    if (state.remainingSec > elapsed) {
+    if (state.remainingSec > elapsed)
+    {
       state.remainingSec -= elapsed;
-    } else {
+    }
+    else
+    {
       state.remainingSec = 0;
       state.running = false;
     }
   }
 }
 
-void resetPomodoro(PomodoroState &state, uint32_t durationSec) {
+void resetPomodoro(PomodoroState &state, uint32_t durationSec)
+{
   state.running = false;
   state.remainingSec = durationSec;
   state.lastTickMs = millis();
